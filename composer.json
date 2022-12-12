@@ -1,0 +1,19 @@
+{
+    "name": "jmeiracorbal/slack-channel-message",
+    "description": "Send messages to slack channel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jose Meira",
+            "email": "jose.meira@fba-consulting.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "SlackChannelMessage\\": "src"
+        }
+    }
+}
