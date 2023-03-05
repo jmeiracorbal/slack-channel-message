@@ -3,24 +3,35 @@
 namespace SlackChannelMessage;
 
 use SlackChannelMessage\Contracts\SlackMessage;
+use SlackChannelMessage\Structures\Payload;
 
+/**
+ * Send a message to Slack channel
+ * Class Message
+ * @package SlackChannelMessage
+ */
 class Message implements SlackMessage {
 
-    private $webhook_url;
-    
-    private function __construct($webhook_url) {
-        $this->webhook_url = $webhook_url;
-    }
+	/**
+	 * Send the Slack message guided to webhook listener
+	 * @param $webhook
+	 * @param $message
+	 * @param null $customStructure
+	 * @return bool|string
+	 */
+    public static function send($webhook, $message, $customStructure = null) {
 
-    public static function send($webhook, $message) {
-        return (new self($webhook))->request($message);
-    }
+    	// permite configurar el formato
+		// ej. blocks editor de slack
+		$structureMessage = !is_null($customStructure) ?
+			$customStructure::getStructure($message) :
+			Payload::getStructure($message)
+		;
 
-    private function request($message) {
-    	// por ahora sólo admite este formato
-		$payload = StructurePayloadJson::getPayloadStructure($message);
+		return (new CurlSlackRequest())->request(
+			$webhook, $structureMessage
+		);
 
-        return (new CurlPayloadRequest())->request($this->webhook_url, $payload);
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace SlackChannelMessage\Contracts;
 
-interface PayloadRequest {
+interface SlackRequest {
 
 	function request($url, $payload);
 

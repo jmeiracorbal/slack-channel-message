@@ -2,9 +2,9 @@
 
 namespace SlackChannelMessage;
 
-use SlackChannelMessage\Contracts\PayloadRequest;
+use SlackChannelMessage\Contracts\SlackRequest;
 
-class CurlPayloadRequest implements PayloadRequest {
+class CurlSlackRequest implements SlackRequest {
 
 	public function request($url, $payload) {
 
