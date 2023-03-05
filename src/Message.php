@@ -2,56 +2,25 @@
 
 namespace SlackChannelMessage;
 
-class Message {
+use SlackChannelMessage\Contracts\SlackMessage;
 
-    private $webhook;
+class Message implements SlackMessage {
+
+    private $webhook_url;
     
-    private function __construct($webhook) {
-        $this->webhook = $webhook;
+    private function __construct($webhook_url) {
+        $this->webhook_url = $webhook_url;
     }
 
     public static function send($webhook, $message) {
-        return (new self($webhook))->sendMessageJson($message);
+        return (new self($webhook))->request($message);
     }
 
-    private function sendMessageJson($message) {
-        return $this->curlRequest(
-            $this->getPayloadMessage($message)
-        );
-    }
+    private function request($message) {
+    	// por ahora sólo admite este formato
+		$payload = StructurePayloadJson::getPayloadStructure($message);
 
-    private function getPayloadMessage($message) {
-        return array(
-            'payload' => json_encode(
-                array(
-                    'text' => $message
-                )
-            )
-        );
-    }
-
-    private function curlRequest($parsedMessage) {
-
-        // Use curl to send your message
-        $c = curl_init($this->webhook);
-        curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($c, CURLOPT_POST, true);
-        curl_setopt($c, CURLOPT_POSTFIELDS, $parsedMessage);
-        $response = \curl_exec($c);
-
-        $error    = \curl_error($c);
-        $errno    = \curl_errno($c);
-
-        if (\is_resource($c)) {
-            \curl_close($c);
-        }
-
-        if (0 !== $errno) {
-            throw new \RuntimeException($error, $errno);
-        }
-
-        return $response;
-
+        return (new CurlPayloadRequest())->request($this->webhook_url, $payload);
     }
 
 }
